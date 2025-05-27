@@ -1,0 +1,7 @@
+<h1>New Mood Entry</h1>
+<form method="POST">
+    {{ form.hidden_tag() }}
+    {{ form.mood.label }} {{ form.mood() }}<br>
+    {{ form.note.label }} {{ form.note() }}<br>
+    {{ form.submit() }}
+</form>

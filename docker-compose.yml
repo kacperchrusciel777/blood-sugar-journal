@@ -1,0 +1,28 @@
+version: '3.9'
+
+services:
+  web:
+    build: .
+    container_name: mood_journal_web
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15
+    container_name: mood_journal_db
+    restart: always
+    environment:
+      POSTGRES_USER: mooduser
+      POSTGRES_PASSWORD: moodpass
+      POSTGRES_DB: moodjournal
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
