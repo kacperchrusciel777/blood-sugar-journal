@@ -232,3 +232,34 @@ ul li {
     max-width: none !important;
     display: inline;
 }
+
+.flash-messages {
+  max-width: 420px;
+  margin: 1em auto;
+  font-weight: 600;
+  text-align: center;
+}
+
+.flash.danger {
+  color: #721c24;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.flash.success {
+  color: #155724;
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.flash.info {
+  color: #0c5460;
+  background-color: #d1ecf1;
+  border: 1px solid #bee5eb;
+  padding: 10px;
+  border-radius: 5px;
+}

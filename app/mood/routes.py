@@ -18,7 +18,7 @@ def new_entry():
         )
         db.session.add(entry)
         db.session.commit()
-        flash('Mood saved!')
+        flash('Wpis nastroju został zapisany.', 'success')
         return redirect(url_for('mood.dashboard'))
     return render_template('mood/new.html', form=form)
 
@@ -48,7 +48,7 @@ def edit_entry(id):
         entry.mood = form.mood.data
         entry.note = form.note.data
         db.session.commit()
-        flash('Mood entry updated successfully.', 'success')
+        flash('Wpis nastroju został pomyślnie zaktualizowany.', 'success')
         return redirect(url_for('mood.dashboard'))
     
     return render_template('mood/edit.html', form=form, entry=entry)
@@ -63,5 +63,5 @@ def delete_entry(id):
     
     db.session.delete(entry)
     db.session.commit()
-    flash('Mood entry deleted.', 'success')
+    flash('Wpis nastroju został usunięty.', 'success')
     return redirect(url_for('mood.dashboard'))
