@@ -1,96 +1,70 @@
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <title>Twój panel nastroju</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        body { font-family: sans-serif; margin: 20px; }
-        nav a { margin-right: 15px; }
-        .chart-container { width: 100%; max-width: 800px; margin: 30px auto; }
-        ul { list-style: none; padding: 0; }
-        li { margin-bottom: 20px; }
-        .actions { margin-top: 5px; }
-        .actions a, .actions form { display: inline-block; margin-right: 10px; }
-        .actions form { margin: 0; }
-        .delete-button {
-            background: none;
-            border: none;
-            color: red;
-            cursor: pointer;
-            padding: 0;
-            font: inherit;
-        }
-    </style>
-</head>
-<body>
-    <nav>
-        <a href="{{ url_for('main.index') }}">Strona główna</a> |
-        <a href="{{ url_for('mood.new_entry') }}">Dodaj nowy wpis</a> |
-        <a href="{{ url_for('auth.logout') }}">Wyloguj się</a>
-    </nav>
+{% extends 'base.html' %}
 
-    <h1>Twoje wpisy nastroju</h1>
+{% block title %}Panel - Mood Journal{% endblock %}
 
-    <ul>
+{% block content %}
+<h1>Panel nastroju</h1>
+
+<ul>
     {% for entry in entries %}
         <li>
-            <strong>{{ entry.mood }}</strong>/10 — {{ entry.timestamp.strftime('%Y-%m-%d %H:%M') }}<br>
+            <strong>Nastrój: {{ entry.mood }}</strong> — {{ entry.timestamp.strftime('%Y-%m-%d %H:%M') }}<br>
             {{ entry.note }}
             <div class="actions">
-                <a href="{{ url_for('mood.edit_entry', id=entry.id) }}">Edytuj</a>
-                <form method="POST" action="{{ url_for('mood.delete_entry', id=entry.id) }}" onsubmit="return confirm('Czy na pewno chcesz usunąć ten wpis?');">
+                <form method="GET" action="{{ url_for('mood.edit_entry', id=entry.id) }}">
+                    <button type="submit" class="btn-action btn-edit">Edytuj</button>
+                </form>
+                <form method="POST" action="{{ url_for('mood.delete_entry', id=entry.id) }}" onsubmit="return confirm('Na pewno usunąć?');">
                     {{ delete_form.hidden_tag() }}
-                    {{ delete_form.submit(class_="delete-button") }}
+                    <button type="submit" class="btn-action btn-delete">Usuń</button>
                 </form>
             </div>
         </li>
     {% else %}
         <li>Brak wpisów.</li>
     {% endfor %}
-    </ul>
+</ul>
 
-    {% if mood_data %}
-    <div class="chart-container">
-        <canvas id="moodChart"></canvas>
-    </div>
+{% if mood_data %}
+<div class="chart-container">
+    <canvas id="moodChart"></canvas>
+</div>
 
-    <script>
-        const ctx = document.getElementById('moodChart').getContext('2d');
-        const moodChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: {{ mood_data | map(attribute='date') | list | tojson }},
-                datasets: [{
-                    label: 'Nastrój w czasie',
-                    data: {{ mood_data | map(attribute='mood') | list | tojson }},
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    fill: true,
-                    tension: 0.2,
-                    pointRadius: 5
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        suggestedMax: 10,
-                        title: {
-                            display: true,
-                            text: 'Nastrój (0–10)'
-                        }
-                    },
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Data'
-                        }
+<script>
+    const ctx = document.getElementById('moodChart').getContext('2d');
+    const moodChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: {{ mood_data | map(attribute='date') | list | tojson }},
+            datasets: [{
+                label: 'Nastrój w czasie',
+                data: {{ mood_data | map(attribute='mood') | list | tojson }},
+                borderColor: 'rgba(74, 144, 226, 1)',
+                backgroundColor: 'rgba(74, 144, 226, 0.2)',
+                fill: true,
+                tension: 0.2,
+                pointRadius: 5
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    suggestedMax: 10,
+                    title: {
+                        display: true,
+                        text: 'Nastrój (0–10)'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Data'
                     }
                 }
             }
-        });
-    </script>
-    {% endif %}
-</body>
-</html>
+        }
+    });
+</script>
+{% endif %}
+{% endblock %}

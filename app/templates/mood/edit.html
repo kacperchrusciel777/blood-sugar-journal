@@ -1,23 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Edit Mood Entry</title>
-</head>
-<body>
-    <h1>Edit Mood Entry</h1>
-    <form method="POST">
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.mood.label }}<br>
-            {{ form.mood(size=5) }}
-        </p>
-        <p>
-            {{ form.note.label }}<br>
-            {{ form.note(rows=4, cols=40) }}
-        </p>
-        <p><input type="submit" value="Save Changes"></p>
-    </form>
-    <p><a href="{{ url_for('mood.dashboard') }}">Back to Dashboard</a></p>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block title %}Edytuj wpis - Mood Journal{% endblock %}
+
+{% block content %}
+<h1>Edytuj wpis</h1>
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.mood.label }}<br>
+        {{ form.mood(size=5) }}
+    </p>
+    <p>
+        {{ form.note.label }}<br>
+        {{ form.note(rows=4, cols=40) }}
+    </p>
+    <p>{{ form.submit(class_="btn-submit", value="Zapisz zmiany") }}</p>
+</form>
+
+<a href="{{ url_for('mood.dashboard') }}" class="btn-link">Powrót do panelu</a>
+{% endblock %}

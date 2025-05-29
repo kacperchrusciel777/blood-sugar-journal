@@ -1,0 +1,234 @@
+/* Reset i podstawy */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f7f9fc;
+    color: #222;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.page-wrapper {
+    background: white;
+    max-width: 900px;
+    width: 100%;
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+    min-height: 90vh;
+    display: flex;
+    flex-direction: column;
+}
+
+header nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.nav-logo {
+    font-weight: 700;
+    font-size: 1.8rem;
+    color: #4a90e2;
+    text-decoration: none;
+}
+
+.nav-links a {
+    margin-left: 20px;
+    color: #4a90e2;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+.nav-links a:hover,
+.nav-links a:focus {
+    background-color: #4a90e2;
+    color: white;
+    outline: none;
+}
+
+main {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1, h2 {
+    margin-top: 0;
+    color: #333;
+    text-align: center;
+}
+
+p {
+    text-align: center;
+    font-size: 1.1rem;
+    max-width: 600px;
+    line-height: 1.5;
+}
+
+form {
+    width: 100%;
+    max-width: 420px;
+    background: #f0f4f8;
+    padding: 25px 30px;
+    border-radius: 8px;
+    box-shadow: inset 0 0 6px rgba(0,0,0,0.05);
+}
+
+form p {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea,
+select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+textarea:focus,
+select:focus {
+    border-color: #4a90e2;
+    outline: none;
+}
+
+input[type="submit"],
+form input[type="submit"],
+form button,
+button {
+    background-color: #4a90e2;
+    border: none;
+    color: white;
+    padding: 10px 18px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+input[type="submit"]:hover,
+form input[type="submit"]:hover,
+form button:hover,
+button:hover {
+    background-color: #3a74c2;
+}
+
+.error {
+    color: #cc0000;
+    font-size: 0.9rem;
+}
+
+ul {
+    list-style: none;
+    padding-left: 0;
+    width: 100%;
+    max-width: 700px;
+}
+
+ul li {
+    background: #e7efff;
+    margin-bottom: 18px;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 7px rgba(0,0,0,0.05);
+    font-size: 1.05rem;
+    position: relative;
+}
+
+/* Akcje pod wpisem */
+.actions {
+    margin-top: 12px;
+    display: flex;
+    gap: 10px;
+}
+
+/* Usunięto styl dla .actions a, bo teraz używamy buttonów */
+
+/* Styl dla przycisków akcji — edytuj i usuń */
+.btn-action {
+    background-color: #4a90e2;
+    border: none;
+    color: white;
+    padding: 8px 14px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-action:hover,
+.btn-action:focus {
+    background-color: #3a74c2;
+    outline: none;
+}
+
+/* Specyficzny styl dla przycisku usuwania */
+.btn-delete {
+    background-color: #cc0000;
+}
+
+.btn-delete:hover,
+.btn-delete:focus {
+    background-color: #990000;
+}
+
+/* Kontener dla wykresu */
+.chart-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 30px auto;
+}
+
+.btn-link {
+    display: inline-block;
+    margin-top: 20px;
+    background-color: #4a90e2;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.btn-link:hover,
+.btn-link:focus {
+    background-color: #3a74c2;
+}
+
+/* Formularze w .actions bez dodatkowego stylu i paddingu */
+.actions form {
+    background: none !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    width: auto !important;
+    max-width: none !important;
+    display: inline;
+}

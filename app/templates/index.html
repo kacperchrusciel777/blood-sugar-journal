@@ -1,11 +1,8 @@
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <title>Mood Journal</title>
-</head>
-<body>
-    <h1>Witaj w Mood Journal!</h1>
-    <p><a href="{{ url_for('auth.login') }}">Zaloguj się</a> lub <a href="{{ url_for('auth.register') }}">Zarejestruj się</a></p>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block title %}Strona główna - Mood Journal{% endblock %}
+
+{% block content %}
+<h1>Witaj w Mood Journal!</h1>
+<p>Twoje miejsce na śledzenie nastrojów i lepsze samopoczucie.</p>
+{% endblock %}
