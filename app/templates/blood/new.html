@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 
-{% block title %}Nowy wpis - Mood Journal{% endblock %}
+{% block title %}Nowy wpis - Blood Journal{% endblock %}
 
 {% block content %}
 <h1>Dodaj nowy wpis</h1>
 <form method="POST">
     {{ form.hidden_tag() }}
     <p>
-        {{ form.mood.label }}<br>
-        {{ form.mood() }}
+        {{ form.blood.label }}<br>
+        {{ form.blood() }}
     </p>
     <p>
         {{ form.note.label }}<br>
@@ -17,5 +17,5 @@
     <p>{{ form.submit(class_="btn-submit") }}</p>
 </form>
 
-<a href="{{ url_for('mood.dashboard') }}" class="btn-link">Powrót do panelu</a>
+<a href="{{ url_for('blood.dashboard') }}" class="btn-link">Powrót do panelu</a>
 {% endblock %}

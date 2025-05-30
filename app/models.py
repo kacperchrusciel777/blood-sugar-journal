@@ -15,11 +15,11 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
 
-class MoodEntry(db.Model):
+class BloodEntry(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    mood = db.Column(db.Integer, nullable=False)  # np. 1–10
+    blood = db.Column(db.Integer, nullable=False)  # np. 1–10
     note = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    user = db.relationship('User', backref=db.backref('mood_entries', lazy=True))
+    user = db.relationship('User', backref=db.backref('blood_entries', lazy=True))

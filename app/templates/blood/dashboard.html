@@ -1,20 +1,20 @@
 {% extends 'base.html' %}
 
-{% block title %}Panel - Mood Journal{% endblock %}
+{% block title %}Panel - Blood Journal{% endblock %}
 
 {% block content %}
-<h1>Panel nastroju</h1>
+<h1>Panel krwi</h1>
 
 <ul>
     {% for entry in entries %}
         <li>
-            <strong>Nastrój: {{ entry.mood }}</strong> — {{ entry.timestamp.strftime('%Y-%m-%d %H:%M') }}<br>
+            <strong>Krew: {{ entry.blood }}</strong> — {{ entry.timestamp.strftime('%Y-%m-%d %H:%M') }}<br>
             {{ entry.note }}
             <div class="actions">
-                <form method="GET" action="{{ url_for('mood.edit_entry', id=entry.id) }}">
+                <form method="GET" action="{{ url_for('blood.edit_entry', id=entry.id) }}">
                     <button type="submit" class="btn-action btn-edit">Edytuj</button>
                 </form>
-                <form method="POST" action="{{ url_for('mood.delete_entry', id=entry.id) }}" onsubmit="return confirm('Na pewno usunąć?');">
+                <form method="POST" action="{{ url_for('blood.delete_entry', id=entry.id) }}" onsubmit="return confirm('Na pewno usunąć?');">
                     {{ delete_form.hidden_tag() }}
                     <button type="submit" class="btn-action btn-delete">Usuń</button>
                 </form>
@@ -25,20 +25,20 @@
     {% endfor %}
 </ul>
 
-{% if mood_data %}
+{% if blood_data %}
 <div class="chart-container">
-    <canvas id="moodChart"></canvas>
+    <canvas id="bloodChart"></canvas>
 </div>
 
 <script>
-    const ctx = document.getElementById('moodChart').getContext('2d');
-    const moodChart = new Chart(ctx, {
+    const ctx = document.getElementById('bloodChart').getContext('2d');
+    const bloodChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: {{ mood_data | map(attribute='date') | list | tojson }},
+            labels: {{ blood_data | map(attribute='date') | list | tojson }},
             datasets: [{
-                label: 'Nastrój w czasie',
-                data: {{ mood_data | map(attribute='mood') | list | tojson }},
+                label: 'Krew w czasie',
+                data: {{ blood_data | map(attribute='blood') | list | tojson }},
                 borderColor: 'rgba(74, 144, 226, 1)',
                 backgroundColor: 'rgba(74, 144, 226, 0.2)',
                 fill: true,
@@ -53,7 +53,7 @@
                     suggestedMax: 10,
                     title: {
                         display: true,
-                        text: 'Nastrój (0–10)'
+                        text: 'Krew (0–10)'
                     }
                 },
                 x: {

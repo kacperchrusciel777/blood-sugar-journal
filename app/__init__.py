@@ -30,7 +30,7 @@ def create_app():
     login_manager.init_app(app)
     csrf.init_app(app)  # <== DODANE
 
-    from app.models import User, MoodEntry
+    from app.models import User, BloodEntry
 
     @login_manager.user_loader
     def load_user(user_id):
@@ -43,7 +43,7 @@ def create_app():
     from app.auth import bp as auth_bp
     app.register_blueprint(auth_bp, url_prefix='/auth')
 
-    from app.mood.routes import bp as mood_bp
-    app.register_blueprint(mood_bp, url_prefix='/mood')
+    from app.blood.routes import bp as blood_bp
+    app.register_blueprint(blood_bp, url_prefix='/blood')
 
     return app

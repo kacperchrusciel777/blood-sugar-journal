@@ -6,5 +6,5 @@ bp = Blueprint('main', __name__)
 @bp.route('/')
 def index():
     if current_user.is_authenticated:
-        return redirect(url_for('mood.dashboard'))
+        return redirect(url_for('blood.dashboard'))
     return render_template('index.html')
