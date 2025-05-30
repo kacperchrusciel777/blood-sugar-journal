@@ -64,4 +64,4 @@ def delete_entry(id):
     db.session.delete(entry)
     db.session.commit()
     flash('Wpis nastroju został usunięty.', 'success')
-    return redirect(url_for('mood.dashboard'))
+    return redirect(url_for('mood.dashboard')) 
