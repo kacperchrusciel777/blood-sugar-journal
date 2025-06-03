@@ -1,4 +1,4 @@
-/* Reset i podstawy */
+/* Reset and basics */
 * {
     box-sizing: border-box;
 }
@@ -160,16 +160,16 @@ ul li {
     position: relative;
 }
 
-/* Akcje pod wpisem */
+/* Actions under the entry */
 .actions {
     margin-top: 12px;
     display: flex;
     gap: 10px;
 }
 
-/* Usunięto styl dla .actions a, bo teraz używamy buttonów */
+/* Removed style for .actions a because now we use buttons */
 
-/* Styl dla przycisków akcji — edytuj i usuń */
+/* Style for action buttons — edit and delete */
 .btn-action {
     background-color: #4a90e2;
     border: none;
@@ -188,7 +188,7 @@ ul li {
     outline: none;
 }
 
-/* Specyficzny styl dla przycisku usuwania */
+/* Specific style for delete button */
 .btn-delete {
     background-color: #cc0000;
 }
@@ -198,7 +198,7 @@ ul li {
     background-color: #990000;
 }
 
-/* Kontener dla wykresu */
+/* Container for the chart */
 .chart-container {
     width: 100%;
     max-width: 800px;
@@ -222,7 +222,7 @@ ul li {
     background-color: #3a74c2;
 }
 
-/* Formularze w .actions bez dodatkowego stylu i paddingu */
+/* Forms inside .actions without extra style or padding */
 .actions form {
     background: none !important;
     padding: 0 !important;

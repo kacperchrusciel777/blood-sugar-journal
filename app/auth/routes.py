@@ -15,7 +15,7 @@ def register():
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
-        flash('Rejestracja przebiegła pomyślnie. Możesz się teraz zalogować.', 'success')
+        flash('Registration successful. You can now log in.', 'success')
         return redirect(url_for('auth.login'))
     return render_template('auth/register.html', form=form)
 
@@ -27,7 +27,7 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user is None or not user.check_password(form.password.data):
-            flash('Nieprawidłowy email lub hasło.', 'danger')
+            flash('Invalid email or password.', 'danger')
             return redirect(url_for('auth.login'))
         login_user(user)
         next_page = request.args.get('next')
@@ -38,5 +38,5 @@ def login():
 @login_required
 def logout():
     logout_user()
-    flash('Zostałeś wylogowany.', 'info')
+    flash('You have been logged out.', 'info')
     return redirect(url_for('main.index'))

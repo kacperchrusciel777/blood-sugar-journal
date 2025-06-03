@@ -5,31 +5,31 @@ from ..models import User
 
 class RegistrationForm(FlaskForm):
     email = StringField('Email', validators=[
-        DataRequired(message='To pole jest wymagane.'),
-        Email(message='Nieprawidłowy adres email.')
+        DataRequired(message='This field is required.'),
+        Email(message='Invalid email address.')
     ])
-    password = PasswordField('Hasło', validators=[
-        DataRequired(message='To pole jest wymagane.'),
-        Length(min=6, message='Hasło musi mieć co najmniej 6 znaków.'),
-        Regexp(r'.*\d', message='Hasło musi zawierać przynajmniej jedną cyfrę.')
+    password = PasswordField('Password', validators=[
+        DataRequired(message='This field is required.'),
+        Length(min=6, message='Password must be at least 6 characters long.'),
+        Regexp(r'.*\d', message='Password must contain at least one digit.')
     ])
-    password2 = PasswordField('Powtórz hasło', validators=[
-        DataRequired(message='To pole jest wymagane.'),
-        EqualTo('password', message='Pola hasła muszą być takie same.')
+    password2 = PasswordField('Repeat Password', validators=[
+        DataRequired(message='This field is required.'),
+        EqualTo('password', message='Passwords must match.')
     ])
-    submit = SubmitField('Zarejestruj się')
+    submit = SubmitField('Register')
 
     def validate_email(self, email):
         user = User.query.filter_by(email=email.data).first()
         if user:
-            raise ValidationError('Email jest już zajęty.')
+            raise ValidationError('Email is already taken.')
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[
-        DataRequired(message='To pole jest wymagane.'),
-        Email(message='Nieprawidłowy adres email.')
+        DataRequired(message='This field is required.'),
+        Email(message='Invalid email address.')
     ])
-    password = PasswordField('Hasło', validators=[
-        DataRequired(message='To pole jest wymagane.')
+    password = PasswordField('Password', validators=[
+        DataRequired(message='This field is required.')
     ])
-    submit = SubmitField('Zaloguj się')
+    submit = SubmitField('Log In')

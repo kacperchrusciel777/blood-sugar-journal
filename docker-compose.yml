@@ -1,10 +1,8 @@
-
-
 services:
   web:
     build: .
-    image: blood_journal_web
-    container_name: blood_journal_web
+    image: glucose_journal_web
+    container_name: glucose_journal_web
     ports:
       - "5000:5000"
     volumes:
@@ -16,12 +14,12 @@ services:
 
   db:
     image: postgres:15
-    container_name: blood_journal_db
+    container_name: glucose_journal_db
     restart: always
     environment:
-      POSTGRES_USER: blooduser
-      POSTGRES_PASSWORD: bloodpass
-      POSTGRES_DB: bloodjournal
+      POSTGRES_USER: glucoseuser
+      POSTGRES_PASSWORD: glucosepass
+      POSTGRES_DB: glucosejournal
     volumes:
       - pgdata:/var/lib/postgresql/data
 

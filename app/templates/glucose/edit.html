@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Entry - Blood Sugar Journal{% endblock %}
+
+{% block content %}
+<h1>Edit Entry</h1>
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.glucose.label }}<br>
+        {{ form.glucose(size=5) }}
+    </p>
+    <p>
+        {{ form.note.label }}<br>
+        {{ form.note(rows=4, cols=40) }}
+    </p>
+    <p>{{ form.submit(class_="btn-submit", value="Save Changes") }}</p>
+</form>
+
+<a href="{{ url_for('glucose.dashboard') }}" class="btn-link">Back to Dashboard</a>
+{% endblock %}

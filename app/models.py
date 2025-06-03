@@ -15,11 +15,11 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
 
-class BloodEntry(db.Model):
+class GlucoseEntry(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    blood = db.Column(db.Integer, nullable=False)  # np. 1–10
+    glucose = db.Column(db.Integer, nullable=False)  # e.g., 1–10 scale
     note = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    user = db.relationship('User', backref=db.backref('blood_entries', lazy=True))
+    user = db.relationship('User', backref=db.backref('glucose_entries', lazy=True))

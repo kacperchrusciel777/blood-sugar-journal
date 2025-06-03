@@ -1,17 +1,17 @@
-# Wybieramy obraz bazowy z Pythona
+# Choose the base image with Python
 FROM python:3.11-slim
 
-# Ustawiamy katalog roboczy w kontenerze
+# Set the working directory inside the container
 WORKDIR /app
 
-# Kopiujemy pliki projektu do kontenera
+# Copy project files into the container
 COPY . .
 
-# Instalujemy zależności
+# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Otwieramy port aplikacji
+# Expose the application port
 EXPOSE 5000
 
-# Komenda do uruchomienia aplikacji
+# Command to run the application
 CMD ["python", "run.py"]

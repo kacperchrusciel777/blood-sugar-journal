@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 
-{% block title %}Nowy wpis - Blood Journal{% endblock %}
+{% block title %}New Entry - Blood Sugar Journal{% endblock %}
 
 {% block content %}
-<h1>Dodaj nowy wpis</h1>
+<h1>Add New Entry</h1>
 <form method="POST">
     {{ form.hidden_tag() }}
     <p>
-        {{ form.blood.label }}<br>
-        {{ form.blood() }}
+        {{ form.glucose.label }}<br>
+        {{ form.glucose() }}
     </p>
     <p>
         {{ form.note.label }}<br>
@@ -17,5 +17,5 @@
     <p>{{ form.submit(class_="btn-submit") }}</p>
 </form>
 
-<a href="{{ url_for('blood.dashboard') }}" class="btn-link">Powrót do panelu</a>
+<a href="{{ url_for('glucose.dashboard') }}" class="btn-link">Back to Dashboard</a>
 {% endblock %}

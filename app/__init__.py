@@ -6,7 +6,7 @@ from flask_login import LoginManager
 from flask_wtf import CSRFProtect
 from dotenv import load_dotenv
 
-# Załaduj zmienne środowiskowe
+# Load environment variables
 load_dotenv()
 
 db = SQLAlchemy()
@@ -19,31 +19,31 @@ login_manager.login_view = 'auth.login'
 def create_app():
     app = Flask(__name__)
 
-    # Konfiguracja
+    # Configuration
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'defaultsecret')
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    # Inicjalizacja rozszerzeń
+    # Initialize extensions
     db.init_app(app)
     migrate.init_app(app, db)
     login_manager.init_app(app)
-    csrf.init_app(app)  # <== DODANE
+    csrf.init_app(app)  # <== ADDED
 
-    from app.models import User, BloodEntry
+    from app.models import User, GlucoseEntry
 
     @login_manager.user_loader
     def load_user(user_id):
         return User.query.get(int(user_id))
 
-    # Rejestracja blueprintów
+    # Register blueprints
     from app.routes import bp as main_bp
     app.register_blueprint(main_bp)
 
     from app.auth import bp as auth_bp
     app.register_blueprint(auth_bp, url_prefix='/auth')
 
-    from app.blood.routes import bp as blood_bp
-    app.register_blueprint(blood_bp, url_prefix='/blood')
+    from app.glucose.routes import bp as glucose_bp
+    app.register_blueprint(glucose_bp, url_prefix='/glucose')
 
     return app
