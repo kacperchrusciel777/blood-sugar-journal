@@ -15,6 +15,7 @@ body {
     padding: 20px;
 }
 
+/* Wrapper for page content */
 .page-wrapper {
     background: white;
     max-width: 900px;
@@ -27,6 +28,7 @@ body {
     flex-direction: column;
 }
 
+/* Navigation */
 header nav {
     display: flex;
     justify-content: space-between;
@@ -59,6 +61,7 @@ header nav {
     outline: none;
 }
 
+/* Main content area */
 main {
     flex-grow: 1;
     display: flex;
@@ -66,6 +69,7 @@ main {
     align-items: center;
 }
 
+/* Typography */
 h1, h2 {
     margin-top: 0;
     color: #333;
@@ -79,6 +83,7 @@ p {
     line-height: 1.5;
 }
 
+/* Forms */
 form {
     width: 100%;
     max-width: 420px;
@@ -86,6 +91,7 @@ form {
     padding: 25px 30px;
     border-radius: 8px;
     box-shadow: inset 0 0 6px rgba(0,0,0,0.05);
+    margin-bottom: 30px;
 }
 
 form p {
@@ -97,7 +103,8 @@ input[type="text"],
 input[type="email"],
 input[type="password"],
 textarea,
-select {
+select,
+.date-input {
     width: 100%;
     padding: 10px 12px;
     border: 1px solid #ccc;
@@ -111,9 +118,27 @@ input[type="text"]:focus,
 input[type="email"]:focus,
 input[type="password"]:focus,
 textarea:focus,
-select:focus {
+select:focus,
+.date-input:focus {
     border-color: #4a90e2;
     outline: none;
+}
+
+/* Buttons */
+input[type="submit"],
+input[type="reset"],
+form input[type="submit"],
+form input[type="reset"],
+form button,
+button,
+.btn-reset {
+    padding: 8px 14px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 input[type="submit"],
@@ -121,14 +146,7 @@ form input[type="submit"],
 form button,
 button {
     background-color: #4a90e2;
-    border: none;
     color: white;
-    padding: 10px 18px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
 }
 
 input[type="submit"]:hover,
@@ -138,11 +156,46 @@ button:hover {
     background-color: #3a74c2;
 }
 
+input[type="reset"],
+.btn-reset {
+    background-color: #bbbbbb;
+    color: white;
+    margin-left: 8px;
+}
+
+input[type="reset"]:hover,
+.btn-reset:hover,
+input[type="reset"]:focus,
+.btn-reset:focus {
+    background-color: #888888;
+    outline: none;
+}
+
+/* Error messages */
 .error {
     color: #cc0000;
     font-size: 0.9rem;
+    margin-top: 4px;
 }
 
+/* Entry notes */
+.entry-note {
+    margin-top: 10px;
+    font-style: italic;
+    font-size: 0.95rem;
+    color: #444;
+    padding-left: 5px;
+    border-left: 3px solid #4a90e2;
+}
+
+/* Filter buttons */
+.filter-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+/* Entries list */
 ul {
     list-style: none;
     padding-left: 0;
@@ -160,23 +213,31 @@ ul li {
     position: relative;
 }
 
-/* Actions under the entry */
+/* Actions under entries */
 .actions {
     margin-top: 12px;
     display: flex;
     gap: 10px;
 }
 
-/* Removed style for .actions a because now we use buttons */
+.actions form {
+    background: none !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    width: auto !important;
+    max-width: none !important;
+    display: inline;
+}
 
-/* Style for action buttons — edit and delete */
+/* Action buttons */
 .btn-action {
     background-color: #4a90e2;
-    border: none;
     color: white;
     padding: 8px 14px;
     font-size: 1rem;
     font-weight: 600;
+    border: none;
     border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s ease;
@@ -188,7 +249,6 @@ ul li {
     outline: none;
 }
 
-/* Specific style for delete button */
 .btn-delete {
     background-color: #cc0000;
 }
@@ -198,13 +258,131 @@ ul li {
     background-color: #990000;
 }
 
-/* Container for the chart */
-.chart-container {
-    width: 100%;
-    max-width: 800px;
-    margin: 30px auto;
+/* Flash messages */
+.flash-messages {
+    max-width: 420px;
+    margin: 1em auto;
+    font-weight: 600;
+    text-align: center;
 }
 
+.flash.danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.flash.success {
+    color: #155724;
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.flash.info {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border: 1px solid #bee5eb;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+/* Filter form */
+.filter-form {
+    display: flex;
+    gap: 15px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    margin-bottom: 25px;
+}
+
+.filter-form label {
+    font-weight: 600;
+    margin-bottom: 4px;
+    display: block;
+}
+
+.filter-form .date-input {
+    max-width: 140px;
+    min-width: 140px;
+}
+
+.filter-form > div {
+    flex: 1 1 auto;
+    min-width: 140px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .filter-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-form .date-input {
+        max-width: 100%;
+        min-width: auto;
+    }
+
+    form {
+        max-width: 100%;
+    }
+}
+
+/* Stats panel */
+.stats-panel {
+    width: 100%;
+    max-width: 800px;
+    background: #ffffff;
+    padding: 25px 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    margin-top: 40px;
+}
+
+.stats-panel h3 {
+    margin-bottom: 20px;
+    text-align: center;
+    color: #333;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 20px;
+}
+
+.stat-box {
+    background: #f0f4f8;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: inset 0 0 4px rgba(0,0,0,0.03);
+}
+
+.stat-label {
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #4a90e2;
+}
+
+.stat-value .unit {
+    font-size: 0.9rem;
+    color: #666;
+    margin-left: 4px;
+}
+
+/* Button as link */
 .btn-link {
     display: inline-block;
     margin-top: 20px;
@@ -222,44 +400,10 @@ ul li {
     background-color: #3a74c2;
 }
 
-/* Forms inside .actions without extra style or padding */
-.actions form {
-    background: none !important;
-    padding: 0 !important;
-    box-shadow: none !important;
-    border-radius: 0 !important;
-    width: auto !important;
-    max-width: none !important;
-    display: inline;
-}
-
-.flash-messages {
-  max-width: 420px;
-  margin: 1em auto;
-  font-weight: 600;
-  text-align: center;
-}
-
-.flash.danger {
-  color: #721c24;
-  background-color: #f8d7da;
-  border: 1px solid #f5c6cb;
-  padding: 10px;
-  border-radius: 5px;
-}
-
-.flash.success {
-  color: #155724;
-  background-color: #d4edda;
-  border: 1px solid #c3e6cb;
-  padding: 10px;
-  border-radius: 5px;
-}
-
-.flash.info {
-  color: #0c5460;
-  background-color: #d1ecf1;
-  border: 1px solid #bee5eb;
-  padding: 10px;
-  border-radius: 5px;
+/* Chart container */
+.chart-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 30px auto;
+    height: 400px;
 }

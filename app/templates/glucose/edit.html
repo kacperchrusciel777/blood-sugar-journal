@@ -11,6 +11,10 @@
         {{ form.glucose(size=5) }}
     </p>
     <p>
+        {{ form.tag.label }}<br>
+        {{ form.tag() }}
+    </p>
+    <p>
         {{ form.note.label }}<br>
         {{ form.note(rows=4, cols=40) }}
     </p>

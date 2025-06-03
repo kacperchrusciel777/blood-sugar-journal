@@ -3,18 +3,48 @@
 {% block title %}Dashboard - Blood Sugar Journal{% endblock %}
 
 {% block content %}
+
 <h1>Glucose Dashboard</h1>
 
+{% if entries %}
+<!-- Filter form -->
+<form method="GET" action="{{ url_for('glucose.dashboard') }}" class="filter-form">
+    {{ filter_form.hidden_tag() }}
+
+    <div>
+        <label for="start_date">Start Date:</label>
+        {{ filter_form.start_date(class="date-input") }}
+    </div>
+
+    <div>
+        <label for="end_date">End Date:</label>
+        {{ filter_form.end_date(class="date-input") }}
+    </div>
+
+    <div class="filter-buttons">
+        <button type="submit" class="btn-action">Filter</button>
+        <button type="button" onclick="window.location='{{ url_for('glucose.dashboard') }}'" class="btn-reset">Reset</button>
+    </div>
+</form>
+{% endif %}
+
+<!-- Entries list -->
 <ul>
     {% for entry in entries %}
         <li>
-            <strong>Glucose: {{ entry.glucose }} mg/dL</strong> — {{ entry.timestamp.strftime('%Y-%m-%d %H:%M') }}<br>
-            {{ entry.note }}
+            <strong>Glucose: {{ entry.glucose }} mg/dL</strong> — 
+            <em>{{ entry.timestamp.strftime('%Y-%m-%d %H:%M') }}</em>
+            {% if entry.tag %}
+                <em>({{ entry.tag }})</em>
+            {% endif %}
+            {% if entry.note %}
+            <p class="entry-note">📝 {{ entry.note }}</p>
+            {% endif %}
             <div class="actions">
                 <form method="GET" action="{{ url_for('glucose.edit_entry', id=entry.id) }}">
-                    <button type="submit" class="btn-action btn-edit">Edit</button>
+                    <button type="submit" class="btn-action">Edit</button>
                 </form>
-                <form method="POST" action="{{ url_for('glucose.delete_entry', id=entry.id) }}" onsubmit="return confirm('Are you sure you want to delete this?');">
+                <form method="POST" action="{{ url_for('glucose.delete_entry', id=entry.id) }}" onsubmit="return confirm('Are you sure you want to delete this entry?');">
                     {{ delete_form.hidden_tag() }}
                     <button type="submit" class="btn-action btn-delete">Delete</button>
                 </form>
@@ -30,6 +60,24 @@
     <canvas id="glucoseChart"></canvas>
 </div>
 
+<div class="stats-panel">
+    <h3>Statistics</h3>
+    <div class="stats-grid">
+        <div class="stat-box">
+            <p class="stat-label">Average</p>
+            <p class="stat-value">{{ avg_glucose | round(1) }} <span class="unit">mg/dL</span></p>
+        </div>
+        <div class="stat-box">
+            <p class="stat-label">Minimum</p>
+            <p class="stat-value">{{ min_glucose }} <span class="unit">mg/dL</span></p>
+        </div>
+        <div class="stat-box">
+            <p class="stat-label">Maximum</p>
+            <p class="stat-value">{{ max_glucose }} <span class="unit">mg/dL</span></p>
+        </div>
+    </div>
+</div>
+
 <script>
     const ctx = document.getElementById('glucoseChart').getContext('2d');
     const glucoseChart = new Chart(ctx, {
@@ -39,14 +87,19 @@
             datasets: [{
                 label: 'Glucose over time (mg/dL)',
                 data: {{ glucose_data | map(attribute='glucose') | list | tojson }},
-                borderColor: 'rgba(74, 144, 226, 1)',
-                backgroundColor: 'rgba(74, 144, 226, 0.2)',
+                borderColor: 'rgba(74, 144, 226, 0.9)',
+                backgroundColor: 'rgba(74, 144, 226, 0.25)',
                 fill: true,
-                tension: 0.2,
-                pointRadius: 5
+                tension: 0.3,
+                pointRadius: 6,
+                pointHoverRadius: 8,
+                pointBackgroundColor: 'rgba(74,144,226,1)',
+                borderWidth: 3,
             }]
         },
         options: {
+            responsive: true,
+            maintainAspectRatio: false,
             scales: {
                 y: {
                     beginAtZero: false,
@@ -63,9 +116,26 @@
                         text: 'Date'
                     }
                 }
+            },
+            plugins: {
+                legend: {
+                    labels: {
+                        font: { weight: 'bold' }
+                    }
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false
+                }
+            },
+            interaction: {
+                mode: 'nearest',
+                axis: 'x',
+                intersect: false
             }
         }
     });
 </script>
 {% endif %}
+
 {% endblock %}
