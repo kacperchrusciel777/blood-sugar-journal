@@ -17,7 +17,7 @@ class User(UserMixin, db.Model):
 
 class GlucoseEntry(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    glucose = db.Column(db.Integer, nullable=False)  # e.g., 1–10 scale
+    glucose = db.Column(db.Integer, nullable=False)  
     note = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
