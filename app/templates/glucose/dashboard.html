@@ -8,7 +8,7 @@
 <ul>
     {% for entry in entries %}
         <li>
-            <strong>Glucose: {{ entry.blood }}</strong> — {{ entry.timestamp.strftime('%Y-%m-%d %H:%M') }}<br>
+            <strong>Glucose: {{ entry.glucose }} mg/dL</strong> — {{ entry.timestamp.strftime('%Y-%m-%d %H:%M') }}<br>
             {{ entry.note }}
             <div class="actions">
                 <form method="GET" action="{{ url_for('glucose.edit_entry', id=entry.id) }}">
@@ -25,7 +25,7 @@
     {% endfor %}
 </ul>
 
-{% if blood_data %}
+{% if glucose_data %}
 <div class="chart-container">
     <canvas id="glucoseChart"></canvas>
 </div>
@@ -35,10 +35,10 @@
     const glucoseChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: {{ blood_data | map(attribute='date') | list | tojson }},
+            labels: {{ glucose_data | map(attribute='date') | list | tojson }},
             datasets: [{
-                label: 'Glucose over time',
-                data: {{ blood_data | map(attribute='blood') | list | tojson }},
+                label: 'Glucose over time (mg/dL)',
+                data: {{ glucose_data | map(attribute='glucose') | list | tojson }},
                 borderColor: 'rgba(74, 144, 226, 1)',
                 backgroundColor: 'rgba(74, 144, 226, 0.2)',
                 fill: true,
@@ -49,11 +49,12 @@
         options: {
             scales: {
                 y: {
-                    beginAtZero: true,
-                    suggestedMax: 10,
+                    beginAtZero: false,
+                    suggestedMin: 60,
+                    suggestedMax: 200,
                     title: {
                         display: true,
-                        text: 'Glucose (0–10)'
+                        text: 'Glucose (mg/dL)'
                     }
                 },
                 x: {
