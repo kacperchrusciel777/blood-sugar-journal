@@ -26,25 +26,28 @@
         <button type="button" onclick="window.location='{{ url_for('glucose.dashboard') }}'" class="btn-reset">Reset</button>
     </div>
 </form>
+
+<!-- Export PDF button -->
+<button id="exportPdfBtn" class="btn-action" style="margin-top: 1em;">Export PDF</button>
 {% endif %}
 
 <!-- Entries list -->
 <ul>
     {% for entry in entries %}
-        <li>
+        <li style="margin-bottom: 1.5em;">
             <strong>Glucose: {{ entry.glucose }} mg/dL</strong> — 
             <em>{{ entry.timestamp.strftime('%Y-%m-%d %H:%M') }}</em>
             {% if entry.tag %}
                 <em>({{ entry.tag }})</em>
             {% endif %}
             {% if entry.note %}
-            <p class="entry-note">📝 {{ entry.note }}</p>
+                <em>({{ entry.note }})</em>
             {% endif %}
-            <div class="actions">
-                <form method="GET" action="{{ url_for('glucose.edit_entry', id=entry.id) }}">
+            <div class="actions" style="margin-top: 0.5em;">
+                <form method="GET" action="{{ url_for('glucose.edit_entry', id=entry.id) }}" style="display: inline-block;">
                     <button type="submit" class="btn-action">Edit</button>
                 </form>
-                <form method="POST" action="{{ url_for('glucose.delete_entry', id=entry.id) }}" onsubmit="return confirm('Are you sure you want to delete this entry?');">
+                <form method="POST" action="{{ url_for('glucose.delete_entry', id=entry.id) }}" onsubmit="return confirm('Are you sure you want to delete this entry?');" style="display: inline-block;">
                     {{ delete_form.hidden_tag() }}
                     <button type="submit" class="btn-action btn-delete">Delete</button>
                 </form>
@@ -56,29 +59,33 @@
 </ul>
 
 {% if glucose_data %}
-<div class="chart-container">
+<div class="chart-container" style="height: 400px; max-width: 800px; margin: auto;">
     <canvas id="glucoseChart"></canvas>
 </div>
 
-<div class="stats-panel">
+<div class="stats-panel" style="max-width: 800px; margin: 2em auto;">
     <h3>Statistics</h3>
-    <div class="stats-grid">
-        <div class="stat-box">
-            <p class="stat-label">Average</p>
+    <div class="stats-grid" style="display: flex; gap: 2em;">
+        <div class="stat-box" style="flex: 1; background: #f0f4ff; padding: 1em; border-radius: 6px;">
+            <p class="stat-label" style="font-weight: bold;">Average</p>
             <p class="stat-value">{{ avg_glucose | round(1) }} <span class="unit">mg/dL</span></p>
         </div>
-        <div class="stat-box">
-            <p class="stat-label">Minimum</p>
+        <div class="stat-box" style="flex: 1; background: #f0f4ff; padding: 1em; border-radius: 6px;">
+            <p class="stat-label" style="font-weight: bold;">Minimum</p>
             <p class="stat-value">{{ min_glucose }} <span class="unit">mg/dL</span></p>
         </div>
-        <div class="stat-box">
-            <p class="stat-label">Maximum</p>
+        <div class="stat-box" style="flex: 1; background: #f0f4ff; padding: 1em; border-radius: 6px;">
+            <p class="stat-label" style="font-weight: bold;">Maximum</p>
             <p class="stat-value">{{ max_glucose }} <span class="unit">mg/dL</span></p>
         </div>
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 <script>
+    // Wykres
     const ctx = document.getElementById('glucoseChart').getContext('2d');
     const glucoseChart = new Chart(ctx, {
         type: 'line',
@@ -134,6 +141,76 @@
                 intersect: false
             }
         }
+    });
+
+    // Eksport PDF
+    document.getElementById('exportPdfBtn').addEventListener('click', async () => {
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'pt', 'a4');
+        let y = 40;
+        const marginX = 40;
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+
+        pdf.setFontSize(18);
+        pdf.text('Glucose Dashboard Report', marginX, y);
+        y += 30;
+
+        // Dodaj wykres jako obraz PNG z canvas
+        const canvas = document.getElementById('glucoseChart');
+        const imgData = canvas.toDataURL('image/png');
+        const imgProps = pdf.getImageProperties(imgData);
+        const pdfWidth = pageWidth - 2 * marginX;
+        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+        if (y + pdfHeight > pageHeight - 40) {
+            pdf.addPage();
+            y = 40;
+        }
+        pdf.addImage(imgData, 'PNG', marginX, y, pdfWidth, pdfHeight);
+        y += pdfHeight + 30;
+
+        // Dodaj statystyki
+        pdf.setFontSize(14);
+        pdf.text('Statistics:', marginX, y);
+        y += 20;
+        pdf.setFontSize(12);
+        pdf.text(`Average glucose: {{ avg_glucose | round(1) }} mg/dL`, marginX, y);
+        y += 18;
+        pdf.text(`Minimum glucose: {{ min_glucose }} mg/dL`, marginX, y);
+        y += 18;
+        pdf.text(`Maximum glucose: {{ max_glucose }} mg/dL`, marginX, y);
+        y += 30;
+
+        // Dodaj notatki w formacie "Glucose: XX mg/dL — DATA (TAG) (NOTATKA)"
+        pdf.setFontSize(14);
+        pdf.text('Entries:', marginX, y);
+        y += 20;
+        pdf.setFontSize(11);
+
+        // Przekazujemy z backendu poprawnie zserializowane dane
+        const entriesData = {{ entries_json | tojson }};
+
+        for (let i = 0; i < entriesData.length; i++) {
+            const e = entriesData[i];
+            // Format daty na "YYYY-MM-DD HH:mm"
+            // Ponieważ timestamp jest w formacie 'YYYY-MM-DD HH:mm' to wystarczy użyć takiego stringa
+            const formattedDate = e.timestamp;
+
+            let line = `Glucose: ${e.glucose} mg/dL — ${formattedDate}`;
+            if (e.tag) line += ` (${e.tag})`;
+            if (e.note) line += ` (${e.note})`;
+
+            let lines = pdf.splitTextToSize(line, pageWidth - 2 * marginX);
+            if (y + lines.length * 14 > pageHeight - 40) {
+                pdf.addPage();
+                y = 40;
+            }
+            pdf.text(lines, marginX, y);
+            y += lines.length * 14 + 8;
+        }
+
+        pdf.save('glucose_dashboard_report.pdf');
     });
 </script>
 {% endif %}

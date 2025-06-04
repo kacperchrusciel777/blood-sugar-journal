@@ -24,6 +24,15 @@ def new_entry():
         return redirect(url_for('glucose.dashboard'))
     return render_template('glucose/new.html', form=form)
 
+def serialize_entry(entry):
+    return {
+        "id": entry.id,
+        "glucose": entry.glucose,
+        "timestamp": entry.timestamp.strftime('%Y-%m-%d %H:%M'),
+        "tag": entry.tag,
+        "note": entry.note
+    }
+
 @bp.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def dashboard():
@@ -52,9 +61,14 @@ def dashboard():
         max_glucose = max(values)
 
     delete_form = DeleteForm()
+
+    # Serializujemy wpisy do prostych słowników, aby można je było bezpiecznie przekazać do JSON
+    entries_json = [serialize_entry(e) for e in entries]
+
     return render_template(
         'glucose/dashboard.html',
         entries=entries,
+        entries_json=entries_json,
         glucose_data=glucose_data,
         delete_form=delete_form,
         filter_form=filter_form,
