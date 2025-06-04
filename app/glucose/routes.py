@@ -42,9 +42,15 @@ def dashboard():
     if filter_form.start_date.data:
         start_dt = datetime.combine(filter_form.start_date.data, datetime.min.time())
         query = query.filter(GlucoseEntry.timestamp >= start_dt)
+
     if filter_form.end_date.data:
         end_dt = datetime.combine(filter_form.end_date.data, datetime.max.time())
         query = query.filter(GlucoseEntry.timestamp <= end_dt)
+
+    if filter_form.tag.data:
+        # jeśli wybrano tag, który nie jest pusty string, filtrujemy po nim
+        if filter_form.tag.data != '':
+            query = query.filter(GlucoseEntry.tag == filter_form.tag.data)
 
     entries = query.order_by(GlucoseEntry.timestamp.asc()).all()
 
@@ -61,8 +67,6 @@ def dashboard():
         max_glucose = max(values)
 
     delete_form = DeleteForm()
-
-    # Serializujemy wpisy do prostych słowników, aby można je było bezpiecznie przekazać do JSON
     entries_json = [serialize_entry(e) for e in entries]
 
     return render_template(

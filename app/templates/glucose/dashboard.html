@@ -21,6 +21,16 @@
         {{ filter_form.end_date(class="date-input") }}
     </div>
 
+    <div>
+        <label for="tag">Measurement Type:</label>
+        <select name="tag" id="tag" class="select-input">
+            <option value="" {% if not filter_form.tag.data %}selected{% endif %}>All</option>
+            <option value="fasting" {% if filter_form.tag.data == 'fasting' %}selected{% endif %}>Fasting</option>
+            <option value="post-meal" {% if filter_form.tag.data == 'post-meal' %}selected{% endif %}>Post-meal</option>
+            <option value="before sleep" {% if filter_form.tag.data == 'before sleep' %}selected{% endif %}>Before sleep</option>
+        </select>
+    </div>
+
     <div class="filter-buttons">
         <button type="submit" class="btn-action">Filter</button>
         <button type="button" onclick="window.location='{{ url_for('glucose.dashboard') }}'" class="btn-reset">Reset</button>
@@ -193,8 +203,6 @@
 
         for (let i = 0; i < entriesData.length; i++) {
             const e = entriesData[i];
-            // Format daty na "YYYY-MM-DD HH:mm"
-            // Ponieważ timestamp jest w formacie 'YYYY-MM-DD HH:mm' to wystarczy użyć takiego stringa
             const formattedDate = e.timestamp;
 
             let line = `Glucose: ${e.glucose} mg/dL — ${formattedDate}`;

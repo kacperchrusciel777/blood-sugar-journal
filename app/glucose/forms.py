@@ -29,6 +29,16 @@ class DeleteForm(FlaskForm):
 class FilterDateForm(FlaskForm):
     start_date = DateField('Start Date', validators=[Optional()])
     end_date = DateField('End Date', validators=[Optional()])
+    tag = SelectField(
+        'Filter by Tag',
+        choices=[
+            ('', 'All'),
+            ('fasting', 'Fasting'),
+            ('post-meal', 'Post-meal'),
+            ('before sleep', 'Before sleep')
+        ],
+        validators=[Optional()]
+    )
     submit = SubmitField('Filter')
 
     def validate_end_date(self, field):
