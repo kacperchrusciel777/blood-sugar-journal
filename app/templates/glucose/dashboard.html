@@ -8,32 +8,32 @@
 
 {% if entries %}
 <!-- Filter form -->
-<form method="GET" action="{{ url_for('glucose.dashboard') }}" class="filter-form">
+<form method="GET" action="{{ url_for('glucose.dashboard') }}" class="filter-form" novalidate>
     {{ filter_form.hidden_tag() }}
 
     <div>
-        <label for="start_date">Start Date:</label>
+        <label for="{{ filter_form.start_date.id }}">Start Date:</label>
         {{ filter_form.start_date(class="date-input") }}
+        {% if filter_form.start_date.errors %}
+            <div class="error">{{ filter_form.start_date.errors[0] }}</div>
+        {% endif %}
     </div>
 
     <div>
-        <label for="end_date">End Date:</label>
+        <label for="{{ filter_form.end_date.id }}">End Date:</label>
         {{ filter_form.end_date(class="date-input") }}
+        {% if filter_form.end_date.errors %}
+            <div class="error">{{ filter_form.end_date.errors[0] }}</div>
+        {% endif %}
     </div>
 
     <div>
-        <label for="tag">Measurement Type:</label>
-        <select name="tag" id="tag" class="select-input">
-            <option value="" {% if not filter_form.tag.data %}selected{% endif %}>All</option>
-            <option value="fasting" {% if filter_form.tag.data == 'fasting' %}selected{% endif %}>Fasting</option>
-            <option value="post-meal" {% if filter_form.tag.data == 'post-meal' %}selected{% endif %}>Post-meal</option>
-            <option value="before sleep" {% if filter_form.tag.data == 'before sleep' %}selected{% endif %}>Before sleep</option>
-        </select>
+        <label for="{{ filter_form.tag.id }}">Measurement Type:</label>
+        {{ filter_form.tag(class="select-input") }}
     </div>
 
     <div class="filter-buttons">
-        <button type="submit" class="btn-action">Filter</button>
-        <!-- Przycisk reset z data-url -->
+        {{ filter_form.submit(class="btn-action") }}
         <button type="button" id="resetBtn" data-url="{{ url_for('glucose.dashboard') }}" class="btn-reset">Reset</button>
     </div>
 </form>
@@ -43,7 +43,7 @@
 {% endif %}
 
 <!-- Entries list -->
-<ul>
+<ul class="entries-list">
     {% for entry in entries %}
         <li>
             <strong>Glucose: {{ entry.glucose }} mg/dL</strong> — 
@@ -52,7 +52,7 @@
                 <em>({{ entry.tag }})</em>
             {% endif %}
             {% if entry.note %}
-                <em>({{ entry.note }})</em>
+                <em>({{ entry.note|e }})</em>
             {% endif %}
             <div class="actions">
                 <form method="GET" action="{{ url_for('glucose.edit_entry', id=entry.id) }}">
@@ -70,7 +70,7 @@
 </ul>
 
 {% if glucose_data %}
-<div class="chart-container">
+<div class="chart-container" style="height: 400px; max-width: 900px; margin: 2em auto;">
     <canvas id="glucoseChart" 
         data-labels='{{ glucose_data | map(attribute="date") | list | tojson }}'
         data-values='{{ glucose_data | map(attribute="glucose") | list | tojson }}'>
@@ -98,7 +98,6 @@
     </div>
 </div>
 
-<!-- Ukryty element do przechowywania entries w JSON -->
 <script type="application/json" id="entriesData">
     {{ entries_json | tojson }}
 </script>
