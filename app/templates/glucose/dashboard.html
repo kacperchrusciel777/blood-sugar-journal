@@ -33,7 +33,8 @@
 
     <div class="filter-buttons">
         <button type="submit" class="btn-action">Filter</button>
-        <button type="button" onclick="window.location='{{ url_for('glucose.dashboard') }}'" class="btn-reset">Reset</button>
+        <!-- Przycisk reset z data-url -->
+        <button type="button" id="resetBtn" data-url="{{ url_for('glucose.dashboard') }}" class="btn-reset">Reset</button>
     </div>
 </form>
 
@@ -70,10 +71,16 @@
 
 {% if glucose_data %}
 <div class="chart-container" style="height: 400px; max-width: 800px; margin: auto;">
-    <canvas id="glucoseChart"></canvas>
+    <canvas id="glucoseChart" 
+        data-labels='{{ glucose_data | map(attribute="date") | list | tojson }}'
+        data-values='{{ glucose_data | map(attribute="glucose") | list | tojson }}'>
+    </canvas>
 </div>
 
-<div class="stats-panel" style="max-width: 800px; margin: 2em auto;">
+<div id="stats" class="stats-panel" style="max-width: 800px; margin: 2em auto;"
+     data-avg-glucose="{{ avg_glucose | round(1) }}"
+     data-min-glucose="{{ min_glucose }}"
+     data-max-glucose="{{ max_glucose }}">
     <h3>Statistics</h3>
     <div class="stats-grid" style="display: flex; gap: 2em;">
         <div class="stat-box" style="flex: 1; background: #f0f4ff; padding: 1em; border-radius: 6px;">
@@ -91,136 +98,14 @@
     </div>
 </div>
 
+<!-- Ukryty element do przechowywania entries w JSON -->
+<script type="application/json" id="entriesData">
+    {{ entries_json | tojson }}
+</script>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-<script>
-    // Wykres
-    const ctx = document.getElementById('glucoseChart').getContext('2d');
-    const glucoseChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: {{ glucose_data | map(attribute='date') | list | tojson }},
-            datasets: [{
-                label: 'Glucose over time (mg/dL)',
-                data: {{ glucose_data | map(attribute='glucose') | list | tojson }},
-                borderColor: 'rgba(74, 144, 226, 0.9)',
-                backgroundColor: 'rgba(74, 144, 226, 0.25)',
-                fill: true,
-                tension: 0.3,
-                pointRadius: 6,
-                pointHoverRadius: 8,
-                pointBackgroundColor: 'rgba(74,144,226,1)',
-                borderWidth: 3,
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    beginAtZero: false,
-                    suggestedMin: 60,
-                    suggestedMax: 200,
-                    title: {
-                        display: true,
-                        text: 'Glucose (mg/dL)'
-                    }
-                },
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Date'
-                    }
-                }
-            },
-            plugins: {
-                legend: {
-                    labels: {
-                        font: { weight: 'bold' }
-                    }
-                },
-                tooltip: {
-                    mode: 'index',
-                    intersect: false
-                }
-            },
-            interaction: {
-                mode: 'nearest',
-                axis: 'x',
-                intersect: false
-            }
-        }
-    });
-
-    // Eksport PDF
-    document.getElementById('exportPdfBtn').addEventListener('click', async () => {
-        const { jsPDF } = window.jspdf;
-        const pdf = new jsPDF('p', 'pt', 'a4');
-        let y = 40;
-        const marginX = 40;
-        const pageWidth = pdf.internal.pageSize.getWidth();
-        const pageHeight = pdf.internal.pageSize.getHeight();
-
-        pdf.setFontSize(18);
-        pdf.text('Glucose Dashboard Report', marginX, y);
-        y += 30;
-
-        // Dodaj wykres jako obraz PNG z canvas
-        const canvas = document.getElementById('glucoseChart');
-        const imgData = canvas.toDataURL('image/png');
-        const imgProps = pdf.getImageProperties(imgData);
-        const pdfWidth = pageWidth - 2 * marginX;
-        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-
-        if (y + pdfHeight > pageHeight - 40) {
-            pdf.addPage();
-            y = 40;
-        }
-        pdf.addImage(imgData, 'PNG', marginX, y, pdfWidth, pdfHeight);
-        y += pdfHeight + 30;
-
-        // Dodaj statystyki
-        pdf.setFontSize(14);
-        pdf.text('Statistics:', marginX, y);
-        y += 20;
-        pdf.setFontSize(12);
-        pdf.text(`Average glucose: {{ avg_glucose | round(1) }} mg/dL`, marginX, y);
-        y += 18;
-        pdf.text(`Minimum glucose: {{ min_glucose }} mg/dL`, marginX, y);
-        y += 18;
-        pdf.text(`Maximum glucose: {{ max_glucose }} mg/dL`, marginX, y);
-        y += 30;
-
-        // Dodaj notatki w formacie "Glucose: XX mg/dL — DATA (TAG) (NOTATKA)"
-        pdf.setFontSize(14);
-        pdf.text('Entries:', marginX, y);
-        y += 20;
-        pdf.setFontSize(11);
-
-        // Przekazujemy z backendu poprawnie zserializowane dane
-        const entriesData = {{ entries_json | tojson }};
-
-        for (let i = 0; i < entriesData.length; i++) {
-            const e = entriesData[i];
-            const formattedDate = e.timestamp;
-
-            let line = `Glucose: ${e.glucose} mg/dL — ${formattedDate}`;
-            if (e.tag) line += ` (${e.tag})`;
-            if (e.note) line += ` (${e.note})`;
-
-            let lines = pdf.splitTextToSize(line, pageWidth - 2 * marginX);
-            if (y + lines.length * 14 > pageHeight - 40) {
-                pdf.addPage();
-                y = 40;
-            }
-            pdf.text(lines, marginX, y);
-            y += lines.length * 14 + 8;
-        }
-
-        pdf.save('glucose_dashboard_report.pdf');
-    });
-</script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
 {% endif %}
 
 {% endblock %}
