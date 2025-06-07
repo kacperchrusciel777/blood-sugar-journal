@@ -45,7 +45,7 @@
 <!-- Entries list -->
 <ul>
     {% for entry in entries %}
-        <li style="margin-bottom: 1.5em;">
+        <li>
             <strong>Glucose: {{ entry.glucose }} mg/dL</strong> — 
             <em>{{ entry.timestamp.strftime('%Y-%m-%d %H:%M') }}</em>
             {% if entry.tag %}
@@ -54,11 +54,11 @@
             {% if entry.note %}
                 <em>({{ entry.note }})</em>
             {% endif %}
-            <div class="actions" style="margin-top: 0.5em;">
-                <form method="GET" action="{{ url_for('glucose.edit_entry', id=entry.id) }}" style="display: inline-block;">
+            <div class="actions">
+                <form method="GET" action="{{ url_for('glucose.edit_entry', id=entry.id) }}">
                     <button type="submit" class="btn-action">Edit</button>
                 </form>
-                <form method="POST" action="{{ url_for('glucose.delete_entry', id=entry.id) }}" onsubmit="return confirm('Are you sure you want to delete this entry?');" style="display: inline-block;">
+                <form method="POST" action="{{ url_for('glucose.delete_entry', id=entry.id) }}" onsubmit="return confirm('Are you sure you want to delete this entry?');">
                     {{ delete_form.hidden_tag() }}
                     <button type="submit" class="btn-action btn-delete">Delete</button>
                 </form>
@@ -70,29 +70,29 @@
 </ul>
 
 {% if glucose_data %}
-<div class="chart-container" style="height: 400px; max-width: 800px; margin: auto;">
+<div class="chart-container">
     <canvas id="glucoseChart" 
         data-labels='{{ glucose_data | map(attribute="date") | list | tojson }}'
         data-values='{{ glucose_data | map(attribute="glucose") | list | tojson }}'>
     </canvas>
 </div>
 
-<div id="stats" class="stats-panel" style="max-width: 800px; margin: 2em auto;"
+<div id="stats" class="stats-panel"
      data-avg-glucose="{{ avg_glucose | round(1) }}"
      data-min-glucose="{{ min_glucose }}"
      data-max-glucose="{{ max_glucose }}">
     <h3>Statistics</h3>
-    <div class="stats-grid" style="display: flex; gap: 2em;">
-        <div class="stat-box" style="flex: 1; background: #f0f4ff; padding: 1em; border-radius: 6px;">
-            <p class="stat-label" style="font-weight: bold;">Average</p>
+    <div class="stats-grid">
+        <div class="stat-box">
+            <p class="stat-label">Average</p>
             <p class="stat-value">{{ avg_glucose | round(1) }} <span class="unit">mg/dL</span></p>
         </div>
-        <div class="stat-box" style="flex: 1; background: #f0f4ff; padding: 1em; border-radius: 6px;">
-            <p class="stat-label" style="font-weight: bold;">Minimum</p>
+        <div class="stat-box">
+            <p class="stat-label">Minimum</p>
             <p class="stat-value">{{ min_glucose }} <span class="unit">mg/dL</span></p>
         </div>
-        <div class="stat-box" style="flex: 1; background: #f0f4ff; padding: 1em; border-radius: 6px;">
-            <p class="stat-label" style="font-weight: bold;">Maximum</p>
+        <div class="stat-box">
+            <p class="stat-label">Maximum</p>
             <p class="stat-value">{{ max_glucose }} <span class="unit">mg/dL</span></p>
         </div>
     </div>
